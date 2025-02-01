@@ -138,6 +138,30 @@ printf("String after trimming: %s\n", sb.data);
 
 ---
 
+## Testing
+
+To test the **C String Builder** library, you can compile and run the provided test file (`test.c`). Here’s how:
+
+### Compile and Run Tests
+
+1. Download the `string_builder.h` file and the `test.c` file:
+   ```bash
+   curl -O https://raw.githubusercontent.com/AdaiasMagdiel/c-string-builder/main/string_builder.h
+   curl -O https://raw.githubusercontent.com/AdaiasMagdiel/c-string-builder/main/test.c
+   ```
+
+2. Compile the test file:
+   ```bash
+   gcc test.c -o test -Wall -Wextra -Werror
+   ```
+
+3. Run the tests:
+   ```bash
+   ./test
+   ```
+
+---
+
 ## API Reference
 
 ### Types
