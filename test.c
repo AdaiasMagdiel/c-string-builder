@@ -32,19 +32,6 @@ void test_free() {
   ok("test_free");
 }
 
-void test_replace() {
-  StringBuilder sb;
-  sb_init(&sb);
-
-  sb_append(&sb, "Hello, World!");
-  sb_replace(&sb, "World", "C");
-
-  assert(strcmp(sb.data, "Hello, C!") == 0);
-
-  sb_free(&sb);
-  ok("test_replace");
-}
-
 void test_append() {
   StringBuilder sb;
   assert(sb_init(&sb) == 0);
@@ -61,10 +48,70 @@ void test_append() {
   ok("test_append");
 }
 
+void test_replace() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "Hello, World!");
+  sb_replace(&sb, "World", "C");
+
+  assert(strcmp(sb.data, "Hello, C!") == 0);
+
+  sb_free(&sb);
+  ok("test_replace");
+}
+
+void test_trim() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "     \r\n              Hello, World! \n\n\t");
+  sb_trim(&sb, NULL);
+  assert(strcmp(sb.data, "Hello, World!") == 0);
+
+  sb_free(&sb);
+  sb_init(&sb);
+
+  sb_append(&sb, "...........Hello, World!.............");
+  sb_trim(&sb, ".");
+  assert(strcmp(sb.data, "Hello, World!") == 0);
+
+  sb_free(&sb);
+  ok("test_trim");
+}
+
+void test_reverse() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "Hello, World!");
+  sb_reverse(&sb);
+  assert(strcmp(sb.data, "!dlroW ,olleH") == 0);
+
+  sb_free(&sb);
+  ok("test_reverse");
+}
+
+void test_read_file() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_read_file(&sb, ".gitignore");
+  sb_trim(&sb, NULL); // to remove newlines
+  assert(strcmp(sb.data, "*.exe") == 0);
+
+  sb_free(&sb);
+  ok("test_read_file");
+}
+
 int main() {
   test_init();
   test_free();
   test_append();
+  test_replace();
+  test_trim();
+  test_reverse();
+  test_read_file();
 
   return 0;
 }
