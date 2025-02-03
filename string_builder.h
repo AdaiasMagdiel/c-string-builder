@@ -18,9 +18,9 @@
 #ifndef MGDL_STRING_BUILDER_H
 #define MGDL_STRING_BUILDER_H
 
-#include <stdio.h>  // For FILE, fopen, fread, etc.
-#include <stdlib.h> // For malloc, realloc, free
-#include <string.h> // For memcpy, memmove, strlen, etc.
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef MGDL_SB_IMPLEMENTATION
 #define SB_DEFAULT_CAPACITY 256
@@ -68,7 +68,7 @@ int sb_init(StringBuilder *sb) {
 
 // Ensures the StringBuilder has enough capacity for a given size.
 // Returns 0 on success, -1 on failure.
-static int ensure_capacity(StringBuilder *sb, size_t new_capacity) {
+int sb_ensure_capacity(StringBuilder *sb, size_t new_capacity) {
   if (!sb || !sb->data) {
     return -1;
   }
@@ -96,7 +96,7 @@ int sb_append(StringBuilder *sb, const char *string) {
   size_t new_len = sb->length + str_len;
 
   if (new_len >= sb->capacity) {
-    if (ensure_capacity(sb, new_len + 1) != 0) {
+    if (sb_ensure_capacity(sb, new_len + 1) != 0) {
       return -1;
     }
   }
@@ -130,7 +130,7 @@ int sb_replace(StringBuilder *sb, const char *str1, const char *str2) {
 
   size_t new_length = sb->length + count * (len_str2 - len_str1);
   if (new_length >= sb->capacity) {
-    if (ensure_capacity(sb, new_length + 1) != 0) {
+    if (sb_ensure_capacity(sb, new_length + 1) != 0) {
       return -1;
     }
   }
@@ -313,7 +313,7 @@ int sb_read_file(StringBuilder *sb, const char *filename) {
     return -1;
   }
 
-  if (ensure_capacity(sb, sb->length + file_size + 1) != 0) {
+  if (sb_ensure_capacity(sb, sb->length + file_size + 1) != 0) {
     fclose(fp);
     return -1;
   }
