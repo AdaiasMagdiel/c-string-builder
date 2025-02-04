@@ -120,6 +120,55 @@ void test_read_file() {
   ok("test_read_file");
 }
 
+void test_split_to_builders() {
+  StringBuilder sb;
+  sb_init(&sb);
+  sb_append(&sb, "one,two,three,four");
+
+  size_t count = 0;
+  StringBuilder *substrings = sb_split_to_builders(&sb, ",", &count);
+
+  assert(count == 4);
+  assert(strcmp(substrings[0].data, "one") == 0);
+  assert(strcmp(substrings[1].data, "two") == 0);
+  assert(strcmp(substrings[2].data, "three") == 0);
+  assert(strcmp(substrings[3].data, "four") == 0);
+
+  sb_free_array(substrings, count);
+  sb_free(&sb);
+  ok("test_split_to_builders");
+}
+
+void test_split_to_builders_no_delimiter() {
+  StringBuilder sb;
+  sb_init(&sb);
+  sb_append(&sb, "singleword");
+
+  size_t count = 0;
+  StringBuilder *substrings = sb_split_to_builders(&sb, ",", &count);
+
+  assert(count == 1);
+  assert(strcmp(substrings[0].data, "singleword") == 0);
+
+  sb_free_array(substrings, count);
+  sb_free(&sb);
+  ok("test_split_to_builders_no_delimiter");
+}
+
+void test_split_to_builders_empty_string() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  size_t count = 0;
+  StringBuilder *substrings = sb_split_to_builders(&sb, ",", &count);
+
+  assert(count == 0);
+  assert(substrings == NULL);
+
+  sb_free(&sb);
+  ok("test_split_to_builders_empty_string");
+}
+
 int main() {
   test_init();
   test_free();
@@ -129,6 +178,9 @@ int main() {
   test_reset();
   test_reverse();
   test_read_file();
+  test_split_to_builders();
+  test_split_to_builders_no_delimiter();
+  test_split_to_builders_empty_string();
 
   return 0;
 }

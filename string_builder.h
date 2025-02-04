@@ -306,6 +306,58 @@ char **sb_split(const StringBuilder *sb, const char *delimiter, size_t *count) {
   return substrings;
 }
 
+// Splits the StringBuilder into an array of StringBuilders based on a
+// delimiter. Returns an array of StringBuilders and sets `count` to the number
+// of substrings. The caller is responsible for freeing the memory allocated for
+// the array and the individual StringBuilders.
+StringBuilder *sb_split_to_builders(const StringBuilder *sb,
+                                    const char *delimiter, size_t *count) {
+  if (!sb || !sb->data || sb->data[0] == '\0' || !count || !delimiter ||
+      strlen(delimiter) == 0) {
+    *count = 0;
+    return NULL;
+  }
+
+  size_t num_substrings = 0;
+  const char *start = sb->data;
+  const char *end;
+
+  while ((end = strstr(start, delimiter)) != NULL) {
+    num_substrings++;
+    start = end + strlen(delimiter);
+  }
+
+  if (*start) {
+    num_substrings++;
+  }
+
+  StringBuilder *sub_sbs = malloc(num_substrings * sizeof(StringBuilder));
+  if (!sub_sbs) {
+    return NULL;
+  }
+
+  size_t i = 0;
+  start = sb->data;
+  while ((end = strstr(start, delimiter)) != NULL) {
+    size_t len = end - start;
+    sb_init(&sub_sbs[i]);
+    sb_append(&sub_sbs[i], start);
+    sub_sbs[i].data[len] = '\0'; // Garantir terminação correta
+    sub_sbs[i].length = len;
+    i++;
+    start = end + strlen(delimiter);
+  }
+
+  if (*start) {
+    sb_init(&sub_sbs[i]);
+    sb_append(&sub_sbs[i], start);
+    i++;
+  }
+
+  *count = num_substrings;
+  return sub_sbs;
+}
+
 // Reads the content of a file and appends it to the StringBuilder.
 // Returns 0 on success, -1 on failure.
 int sb_read_file(StringBuilder *sb, const char *filename) {
@@ -353,6 +405,16 @@ void sb_free(StringBuilder *sb) {
     sb->length = 0;
     sb->capacity = SB_DEFAULT_CAPACITY;
   }
+}
+
+// Free an array of StringBuilders
+void sb_free_array(StringBuilder *sbs, size_t count) {
+  if (!sbs)
+    return;
+  for (size_t i = 0; i < count; i++) {
+    sb_free(&sbs[i]);
+  }
+  free(sbs);
 }
 
 #endif
