@@ -79,6 +79,17 @@ int main() {
 }
 ```
 
+### Resetting the StringBuilder
+
+```c
+// Reset the StringBuilder, effectively clearing its content
+if (sb_reset(&sb) == -1) {
+    fprintf(stderr, "Error: Failed to reset the StringBuilder.\n");
+    return 1;
+}
+printf("StringBuilder after reset: %s\n", sb.data); // Output: ""
+```
+
 ### String Replacement
 
 ```c
@@ -189,6 +200,17 @@ Initializes the `StringBuilder` with default capacity.
 - **Returns**:
   - `0` on success.
   - `-1` on failure (e.g., memory allocation error).
+
+---
+
+#### `int sb_reset(StringBuilder *sb)`
+Resets the `StringBuilder`, effectively clearing its content without freeing the allocated memory. This allows the `StringBuilder` to be reused for new strings.
+
+- **Parameters**:
+  - `sb`: Pointer to the `StringBuilder` object.
+- **Returns**:
+  - `0` on success.
+  - `-1` on failure (e.g., if `sb` or `sb->data` is `NULL`).
 
 ---
 

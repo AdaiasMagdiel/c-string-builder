@@ -80,6 +80,22 @@ void test_trim() {
   ok("test_trim");
 }
 
+void test_reset() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "Hello, World!");
+  assert(strcmp(sb.data, "Hello, World!") == 0);
+
+  sb_reset(&sb);
+
+  sb_append(&sb, "A new string");
+  assert(strcmp(sb.data, "A new string") == 0);
+
+  sb_free(&sb);
+  ok("test_reset");
+}
+
 void test_reverse() {
   StringBuilder sb;
   sb_init(&sb);
@@ -110,6 +126,7 @@ int main() {
   test_append();
   test_replace();
   test_trim();
+  test_reset();
   test_reverse();
   test_read_file();
 

@@ -41,6 +41,7 @@ int sb_ensure_capacity(StringBuilder *sb, size_t additional_length);
 int sb_append(StringBuilder *sb, const char *string);
 int sb_replace(StringBuilder *sb, const char *str1, const char *str2);
 int sb_trim(StringBuilder *sb, const char *chars_to_trim);
+int sb_reset(StringBuilder *sb);
 void sb_reverse(StringBuilder *sb);
 char **sb_split(const StringBuilder *sb, const char *delimiter, size_t *count);
 int sb_read_file(StringBuilder *sb, const char *filename);
@@ -197,6 +198,19 @@ int sb_trim(StringBuilder *sb, const char *chars_to_trim) {
 
   sb->data[end - start] = '\0';
   sb->length = end - start;
+
+  return 0;
+}
+
+// Resets the StringBuilder, effectively clearing its content.
+// Returns 0 on success, -1 on failure.
+int sb_reset(StringBuilder *sb) {
+  if (!sb || !sb->data) {
+    return -1;
+  }
+
+  sb->length = 0;
+  sb->data[0] = '\0';
 
   return 0;
 }
