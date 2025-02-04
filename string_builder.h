@@ -44,7 +44,10 @@ int sb_trim(StringBuilder *sb, const char *chars_to_trim);
 int sb_reset(StringBuilder *sb);
 void sb_reverse(StringBuilder *sb);
 char **sb_split(const StringBuilder *sb, const char *delimiter, size_t *count);
+StringBuilder *sb_split_to_builders(const StringBuilder *sb,
+                                    const char *delimiter, size_t *count);
 int sb_read_file(StringBuilder *sb, const char *filename);
+void sb_free_array(StringBuilder *sbs, size_t count);
 void sb_free(StringBuilder *sb);
 
 // ================================================================
