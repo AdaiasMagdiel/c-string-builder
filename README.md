@@ -115,12 +115,29 @@ printf("File contents: %s\n", sb.data);
 // Split the string into substrings based on a delimiter
 size_t count;
 char **substrings = sb_split(&sb, " ", &count);
+
 if (substrings) {
     for (size_t i = 0; i < count; i++) {
         printf("Substring %zu: %s\n", i, substrings[i]);
         free(substrings[i]); // Free each substring
     }
     free(substrings); // Free the array of substrings
+}
+```
+
+### Splitting Strings into StringBuilders
+
+```c
+// Split the string into substrings based on a delimiter and store them in separate StringBuilders
+size_t count;
+StringBuilder *builders = sb_split_into_builders(&sb, " ", &count);
+
+if (builders) {
+    for (size_t i = 0; i < count; i++) {
+        printf("Substring %zu: %s (length %zu)\n", i, builders[i].data, builders[i].length);
+    }
+
+    sb_free_array(builders, count); // Free the array of StringBuilders
 }
 ```
 
@@ -272,6 +289,19 @@ Splits the `StringBuilder` into substrings based on a delimiter.
 
 ---
 
+#### `StringBuilder **sb_split_to_builders(const StringBuilder *sb, const char *delimiter, size_t *count)`
+Splits the `StringBuilder` into an array of `StringBuilder` objects, each holding a substring. This is useful when you want to perform further manipulations on each substring as a `StringBuilder`.
+
+- **Parameters**:
+  - `sb`: Pointer to the `StringBuilder` object.
+  - `delimiter`: The delimiter string.
+  - `count`: Pointer to store the number of `StringBuilder` objects.
+- **Returns**:
+  - Array of `StringBuilder` objects (must be freed by the caller using `sb_free_array`).
+  - `NULL` on failure.
+
+---
+
 #### `int sb_read_file(StringBuilder *sb, const char *filename)`
 Reads the content of a file and appends it to the `StringBuilder`.
 
@@ -281,6 +311,15 @@ Reads the content of a file and appends it to the `StringBuilder`.
 - **Returns**:
   - `0` on success.
   - `-1` on failure.
+
+---
+
+#### `void sb_free_array(StringBuilder *sbs, size_t count)`
+Frees the memory allocated for an array of `StringBuilder`.
+
+- **Parameters**:
+  - `array`: Pointer to the array of substrings.
+  - `count`: The number of substrings in the array.
 
 ---
 
