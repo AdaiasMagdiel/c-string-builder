@@ -22,6 +22,7 @@ Here’s what **C String Builder** can do:
 - **String splitting**: Split a string into substrings based on a delimiter.
 - **String reversal**: Reverse a string quickly and easily.
 - **Whitespace trimming**: Remove unnecessary leading and trailing whitespace.
+- **Leading/trailing character trimming**: Remove specific characters from the start (`sb_ltrim`) or end (`sb_rtrim`) of the string.
 - **Memory management**: Automatically handles memory allocation and reallocation.
 - **Lightweight**: Written in pure C with no external dependencies.
 - **Easy to integrate**: Single-header library with a simple API.
@@ -157,6 +158,18 @@ sb_trim(&sb, NULL);
 printf("String after trimming: %s\n", sb.data);
 ```
 
+### Trimming Leading Characters
+```c
+sb_ltrim(&sb, NULL); // Trims whitespace by default
+printf("String after left-trimming: %s\n", sb.data);
+```
+
+### Trimming Trailing Characters
+```c
+sb_rtrim(&sb, NULL); // Trims whitespace by default
+printf("String after right-trimming: %s\n", sb.data);
+```
+
 ---
 
 ## Requirements
@@ -259,6 +272,28 @@ Replaces all occurrences of `str1` with `str2` in the `StringBuilder`.
 #### `int sb_trim(StringBuilder *sb, const char *chars_to_trim)`
 Trims leading and trailing characters from the `StringBuilder`. If `chars_to_trim` is `NULL`, trims whitespace characters (`" \t\n\r"`).
 
+- **Parameters**:
+  - `sb`: Pointer to the `StringBuilder` object.
+  - `chars_to_trim`: Characters to trim (or `NULL` for whitespace).
+- **Returns**:
+  - `0` on success.
+  - `-1` on failure.
+
+---
+
+#### `int sb_ltrim(StringBuilder *sb, const char *chars_to_trim)`
+Trims leading characters from the `StringBuilder`. If `chars_to_trim` is `NULL`, trims whitespace characters (`" \t\n\r"`).
+- **Parameters**:
+  - `sb`: Pointer to the `StringBuilder` object.
+  - `chars_to_trim`: Characters to trim (or `NULL` for whitespace).
+- **Returns**:
+  - `0` on success.
+  - `-1` on failure.
+
+---
+
+#### `int sb_rtrim(StringBuilder *sb, const char *chars_to_trim)`
+Trims trailing characters from the `StringBuilder`. If `chars_to_trim` is `NULL`, trims whitespace characters (`" \t\n\r"`).
 - **Parameters**:
   - `sb`: Pointer to the `StringBuilder` object.
   - `chars_to_trim`: Characters to trim (or `NULL` for whitespace).
