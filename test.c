@@ -69,8 +69,7 @@ void test_trim() {
   sb_trim(&sb, NULL);
   assert(strcmp(sb.data, "Hello, World!") == 0);
 
-  sb_free(&sb);
-  sb_init(&sb);
+  sb_reset(&sb);
 
   sb_append(&sb, "...........Hello, World!.............");
   sb_trim(&sb, ".");
@@ -78,6 +77,42 @@ void test_trim() {
 
   sb_free(&sb);
   ok("test_trim");
+}
+
+void test_ltrim() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "     \r\n              Hello, World! \n\n\t");
+  sb_ltrim(&sb, NULL);
+  assert(strcmp(sb.data, "Hello, World! \n\n\t") == 0);
+
+  sb_reset(&sb);
+
+  sb_append(&sb, "...........Hello, World!.............");
+  sb_ltrim(&sb, ".");
+  assert(strcmp(sb.data, "Hello, World!.............") == 0);
+
+  sb_free(&sb);
+  ok("test_ltrim");
+}
+
+void test_rtrim() {
+  StringBuilder sb;
+  sb_init(&sb);
+
+  sb_append(&sb, "     \r\n   Hello, World! \n\n\t           ");
+  sb_rtrim(&sb, NULL);
+  assert(strcmp(sb.data, "     \r\n   Hello, World!") == 0);
+
+  sb_reset(&sb);
+
+  sb_append(&sb, "...........Hello, World!.............");
+  sb_rtrim(&sb, ".");
+  assert(strcmp(sb.data, "...........Hello, World!") == 0);
+
+  sb_free(&sb);
+  ok("test_rtrim");
 }
 
 void test_reset() {
@@ -175,6 +210,8 @@ int main() {
   test_append();
   test_replace();
   test_trim();
+  test_ltrim();
+  test_rtrim();
   test_reset();
   test_reverse();
   test_read_file();
