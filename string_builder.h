@@ -205,6 +205,67 @@ int sb_trim(StringBuilder *sb, const char *chars_to_trim) {
   return 0;
 }
 
+// Removes leading characters from the StringBuilder.
+// If `chars_to_trim` is NULL, trims whitespace characters (" \t\n\r").
+// Returns 0 on success, -1 on failure.
+int sb_ltrim(StringBuilder *sb, const char *chars_to_trim) {
+  if (!sb || !sb->data) {
+    return -1;
+  }
+
+  const char *trim_chars = (chars_to_trim != NULL) ? chars_to_trim : " \t\n\r";
+
+  size_t start = 0;
+  while (start < sb->length && strchr(trim_chars, sb->data[start]) != NULL) {
+    start++;
+  }
+
+  if (start >= sb->length) {
+    sb->data[0] = '\0';
+    sb->length = 0;
+    return 0;
+  }
+
+  memmove(sb->data, sb->data + start, sb->length - start);
+
+  sb->data[sb->length - start] = '\0';
+  sb->length = sb->length - start;
+
+  return 0;
+}
+
+// Removes trailing characters from the StringBuilder.
+// If `chars_to_trim` is NULL, trims whitespace characters (" \t\n\r").
+// Returns 0 on success, -1 on failure.
+int sb_rtrim(StringBuilder *sb, const char *chars_to_trim) {
+  if (!sb || !sb->data) {
+    return -1;
+  }
+
+  const char *trim_chars = (chars_to_trim != NULL) ? chars_to_trim : " \t\n\r";
+
+  // ola....
+  // 012^456  - length: 7 | end = 3
+
+  size_t end = sb->length;
+  while (end > 0 && strchr(trim_chars, sb->data[end - 1]) != NULL) {
+    end--;
+  }
+
+  if (end == 0) {
+    sb->data[0] = '\0';
+    sb->length = 0;
+    return 0;
+  }
+
+  memmove(sb->data, sb->data, end);
+
+  sb->data[end] = '\0';
+  sb->length = end;
+
+  return 0;
+}
+
 // Resets the StringBuilder, effectively clearing its content.
 // Returns 0 on success, -1 on failure.
 int sb_reset(StringBuilder *sb) {
