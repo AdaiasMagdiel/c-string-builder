@@ -18,6 +18,7 @@
 #ifndef MGDL_STRING_BUILDER_H
 #define MGDL_STRING_BUILDER_H
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,7 @@ typedef struct StringBuilder {
 StringBuilder sb_new(const char *value);
 int sb_ensure_capacity(StringBuilder *sb, size_t additional_length);
 int sb_append(StringBuilder *sb, const char *string);
+int sb_appendf(StringBuilder *sb, const char *format, ...);
 int sb_replace(StringBuilder *sb, const char *str1, const char *str2);
 int sb_trim(StringBuilder *sb, const char *chars_to_trim);
 int sb_ltrim(StringBuilder *sb, const char *chars_to_trim);
@@ -474,6 +476,43 @@ int sb_read_file(StringBuilder *sb, const char *filename) {
   sb->data[sb->length] = '\0';
 
   fclose(fp);
+  return 0;
+}
+
+// Add a formated string to StringBuilder.
+// Returns 0 on success, -1 on failure.
+int sb_appendf(StringBuilder *sb, const char *format, ...) {
+  if (!sb || !format) {
+    return -1; // Verifica se o StringBuilder ou o formato são nulos
+  }
+
+  va_list args;
+  va_start(args, format);
+
+  int needed_size = vsnprintf(NULL, 0, format, args);
+  va_end(args);
+
+  if (needed_size < 0) {
+    return -1;
+  }
+
+  size_t new_len = sb->length + needed_size + 1;
+  if (new_len > sb->capacity) {
+    if (sb_ensure_capacity(sb, new_len) != 0) {
+      return -1;
+    }
+  }
+
+  va_start(args, format);
+  int result = vsnprintf(sb->data + sb->length, needed_size + 1, format, args);
+  va_end(args);
+
+  if (result < 0) {
+    return -1;
+  }
+
+  sb->length += needed_size;
+
   return 0;
 }
 
