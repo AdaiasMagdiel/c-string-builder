@@ -59,15 +59,13 @@ To use the library, simply include the `string_builder.h` file in your project. 
 #include "string_builder.h"
 
 int main() {
-    // Initialize the StringBuilder
-    StringBuilder sb;
-    if (sb_init(&sb) == -1) {
-        fprintf(stderr, "Error: Failed to initialize the StringBuilder.\n");
-        return 1;
-    }
+    // Initialize the StringBuilder with an initial value
+    StringBuilder sb = sb_new("Hello");
+
+    // Or initialize with empty value
+    // StringBuilder sb = sb_new("");
 
     // Append strings
-    sb_append(&sb, "Hello");
     sb_append(&sb, ", ");
     sb_append(&sb, "World!");
 
@@ -222,14 +220,13 @@ typedef struct StringBuilder {
 
 ### Functions
 
-#### `int sb_init(StringBuilder *sb)`
-Initializes the `StringBuilder` with default capacity.
-
+#### `StringBuilder sb_new(const char *value)`
+Initializes a new `StringBuilder` with an optional initial value.
 - **Parameters**:
-  - `sb`: Pointer to the `StringBuilder` object.
+  - `value`: The initial string value (can be `NULL` or an empty string).
 - **Returns**:
-  - `0` on success.
-  - `-1` on failure (e.g., memory allocation error).
+  - A `StringBuilder` object initialized with the given value.
+  - If memory allocation fails, the `length` and `capacity` will be `0`.
 
 ---
 
