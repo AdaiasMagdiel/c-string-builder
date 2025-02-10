@@ -20,6 +20,13 @@ void test_new() {
   assert(strcmp(sb1.data, "") == 0);
   sb_free(&sb1);
 
+  StringBuilder sb2 = sb_new(NULL);
+
+  assert(sb2.capacity == SB_DEFAULT_CAPACITY);
+  assert(sb2.length == 0);
+  assert(strcmp(sb2.data, "") == 0);
+  sb_free(&sb2);
+
   ok("test_new");
 }
 
