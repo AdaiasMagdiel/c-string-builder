@@ -23,6 +23,7 @@ Here’s what **C String Builder** can do:
 - **String reversal**: Reverse a string quickly and easily.
 - **Whitespace trimming**: Remove unnecessary leading and trailing whitespace.
 - **Leading/trailing character trimming**: Remove specific characters from the start (`sb_ltrim`) or end (`sb_rtrim`) of the string.
+- **Formatted string appending**: Add formatted strings (e.g., `"%s: %d"`) to the StringBuilder using `sb_appendf`.
 - **Memory management**: Automatically handles memory allocation and reallocation.
 - **Lightweight**: Written in pure C with no external dependencies.
 - **Easy to integrate**: Single-header library with a simple API.
@@ -71,6 +72,29 @@ int main() {
 
     // Display the result
     printf("String: %s\n", sb.data); // Output: "Hello, World!"
+
+    // Free allocated memory
+    sb_free(&sb);
+    return 0;
+}
+```
+
+### Appending Formatted Strings
+
+```c
+#include <stdio.h>
+#include "string_builder.h"
+
+int main() {
+    StringBuilder sb = sb_new("");
+    const char *name = "Alice";
+    int age = 30;
+
+    // Append a formatted string
+    sb_appendf(&sb, "Name: %s, Age: %d", name, age);
+
+    // Display the result
+    printf("String: %s\n", sb.data); // Output: "Name: Alice, Age: 30"
 
     // Free allocated memory
     sb_free(&sb);
@@ -250,6 +274,20 @@ Appends a string to the `StringBuilder`.
 - **Returns**:
   - Length of the appended string on success.
   - `-1` on failure.
+
+---
+
+#### `int sb_appendf(StringBuilder *sb, const char *format, ...)`
+
+Appends a formatted string to the `StringBuilder`.
+
+- **Parameters**:
+  - `sb`: Pointer to the `StringBuilder` object.
+  - `format`: The format string (e.g., `"%s: %d"`).
+  - `...`: Additional arguments to fill the format string.
+- **Returns**:
+  - `0` on success.
+  - `-1` on failure (e.g., memory allocation error).
 
 ---
 
