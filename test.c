@@ -60,6 +60,37 @@ void test_append() {
   ok("test_append");
 }
 
+void test_appendf() {
+
+  StringBuilder sb = sb_new("");
+  assert(sb_appendf(&sb, "Hello, %s!", "World") == 0);
+  assert(strcmp(sb.data, "Hello, World!") == 0);
+
+  assert(sb_appendf(&sb, " The number is %d and the float is %.2f.", 42,
+                    3.14159) == 0);
+  assert(strcmp(sb.data,
+                "Hello, World! The number is 42 and the float is 3.14.") == 0);
+
+  StringBuilder sb_empty = sb_new("");
+  assert(sb_appendf(&sb_empty, "%s", NULL) == 0);
+  assert(strcmp(sb_empty.data, "(null)") == 0);
+
+  StringBuilder sb_long = sb_new("");
+  char long_str[1000];
+  memset(long_str, 'a', sizeof(long_str) - 1);
+  long_str[sizeof(long_str) - 1] = '\0';
+  assert(sb_appendf(&sb_long, "Long string: %s", long_str) == 0);
+  char expected_long[1015];
+  snprintf(expected_long, sizeof(expected_long), "Long string: %s", long_str);
+  assert(strcmp(sb_long.data, expected_long) == 0);
+
+  sb_free(&sb);
+  sb_free(&sb_empty);
+  sb_free(&sb_long);
+
+  ok("test_appendf");
+}
+
 void test_replace() {
   StringBuilder sb = sb_new("");
 
@@ -212,6 +243,7 @@ int main() {
   test_new();
   test_free();
   test_append();
+  test_appendf();
   test_replace();
   test_trim();
   test_ltrim();
