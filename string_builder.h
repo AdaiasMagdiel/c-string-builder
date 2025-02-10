@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef MGDL_SB_IMPLEMENTATION
 #define SB_DEFAULT_CAPACITY 256
 
 // ================================================================
@@ -55,6 +54,8 @@ void sb_free(StringBuilder *sb);
 // ================================================================
 // Implementation
 // ================================================================
+
+#ifdef MGDL_SB_IMPLEMENTATION
 
 // Initialize the StringBuilder
 int sb_init(StringBuilder *sb) {
