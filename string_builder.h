@@ -35,7 +35,7 @@ typedef struct StringBuilder {
   size_t capacity; // Total allocated memory for the string.
 } StringBuilder;
 
-int sb_init(StringBuilder *sb);
+StringBuilder sb_new(const char *value);
 int sb_ensure_capacity(StringBuilder *sb, size_t additional_length);
 int sb_append(StringBuilder *sb, const char *string);
 int sb_replace(StringBuilder *sb, const char *str1, const char *str2);
@@ -57,20 +57,22 @@ void sb_free(StringBuilder *sb);
 
 #ifdef MGDL_SB_IMPLEMENTATION
 
-// Initialize the StringBuilder
-int sb_init(StringBuilder *sb) {
-  if (!sb)
-    return -1;
+// Create a new StringBuilder
+StringBuilder sb_new(const char *value) {
+  StringBuilder sb;
+  sb.length = strlen(value);
+  sb.capacity = (sb.length + 1 > SB_DEFAULT_CAPACITY) ? sb.length + 1
+                                                      : SB_DEFAULT_CAPACITY;
 
-  sb->length = 0;
-  sb->capacity = SB_DEFAULT_CAPACITY;
+  sb.data = malloc(sb.capacity * sizeof(char));
+  if (!sb.data) {
+    sb.length = 0;
+    sb.capacity = 0;
+    return sb;
+  }
 
-  sb->data = malloc(sb->capacity * sizeof(char));
-  if (!sb->data)
-    return -1;
-
-  sb->data[0] = '\0';
-  return 0;
+  strcpy(sb.data, value);
+  return sb;
 }
 
 // Ensures the StringBuilder has enough capacity for a given size.
@@ -247,9 +249,6 @@ int sb_rtrim(StringBuilder *sb, const char *chars_to_trim) {
 
   const char *trim_chars = (chars_to_trim != NULL) ? chars_to_trim : " \t\n\r";
 
-  // ola....
-  // 012^456  - length: 7 | end = 3
-
   size_t end = sb->length;
   while (end > 0 && strchr(trim_chars, sb->data[end - 1]) != NULL) {
     end--;
@@ -407,17 +406,17 @@ StringBuilder *sb_split_to_builders(const StringBuilder *sb,
   start = sb->data;
   while ((end = strstr(start, delimiter)) != NULL) {
     size_t len = end - start;
-    sb_init(&sub_sbs[i]);
-    sb_append(&sub_sbs[i], start);
-    sub_sbs[i].data[len] = '\0'; // Garantir terminação correta
-    sub_sbs[i].length = len;
+    char temp[len + 1];
+    strncpy(temp, start, len);
+    temp[len] = '\0';
+
+    sub_sbs[i] = sb_new(temp);
     i++;
     start = end + strlen(delimiter);
   }
 
   if (*start) {
-    sb_init(&sub_sbs[i]);
-    sb_append(&sub_sbs[i], start);
+    sub_sbs[i] = sb_new(start);
     i++;
   }
 
