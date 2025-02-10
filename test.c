@@ -5,20 +5,26 @@
 
 void ok(const char *test) { printf("\x1b[32m[PASS]\x1b[0m %s\n", test); }
 
-void test_init() {
-  StringBuilder sb;
+void test_new() {
+  StringBuilder sb = sb_new("value");
 
-  assert(sb_init(&sb) == 0);
   assert(sb.capacity == SB_DEFAULT_CAPACITY);
-  assert(sb.length == 0);
-
+  assert(sb.length == strlen("value"));
+  assert(strcmp(sb.data, "value") == 0);
   sb_free(&sb);
-  ok("test_init");
+
+  StringBuilder sb1 = sb_new("");
+
+  assert(sb1.capacity == SB_DEFAULT_CAPACITY);
+  assert(sb1.length == 0);
+  assert(strcmp(sb1.data, "") == 0);
+  sb_free(&sb1);
+
+  ok("test_new");
 }
 
 void test_free() {
-  StringBuilder sb;
-  assert(sb_init(&sb) == 0);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "Some content");
 
@@ -33,8 +39,7 @@ void test_free() {
 }
 
 void test_append() {
-  StringBuilder sb;
-  assert(sb_init(&sb) == 0);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "Hello");
   assert(strcmp("Hello", sb.data) == 0);
@@ -49,8 +54,7 @@ void test_append() {
 }
 
 void test_replace() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "Hello, World!");
   sb_replace(&sb, "World", "C");
@@ -62,8 +66,7 @@ void test_replace() {
 }
 
 void test_trim() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "     \r\n              Hello, World! \n\n\t");
   sb_trim(&sb, NULL);
@@ -80,8 +83,7 @@ void test_trim() {
 }
 
 void test_ltrim() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "     \r\n              Hello, World! \n\n\t");
   sb_ltrim(&sb, NULL);
@@ -98,8 +100,7 @@ void test_ltrim() {
 }
 
 void test_rtrim() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "     \r\n   Hello, World! \n\n\t           ");
   sb_rtrim(&sb, NULL);
@@ -116,8 +117,7 @@ void test_rtrim() {
 }
 
 void test_reset() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "Hello, World!");
   assert(strcmp(sb.data, "Hello, World!") == 0);
@@ -132,8 +132,7 @@ void test_reset() {
 }
 
 void test_reverse() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_append(&sb, "Hello, World!");
   sb_reverse(&sb);
@@ -144,8 +143,7 @@ void test_reverse() {
 }
 
 void test_read_file() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   sb_read_file(&sb, ".gitignore");
   sb_trim(&sb, NULL); // to remove newlines
@@ -156,8 +154,8 @@ void test_read_file() {
 }
 
 void test_split_to_builders() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
+
   sb_append(&sb, "one,two,three,four");
 
   size_t count = 0;
@@ -175,8 +173,8 @@ void test_split_to_builders() {
 }
 
 void test_split_to_builders_no_delimiter() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
+
   sb_append(&sb, "singleword");
 
   size_t count = 0;
@@ -191,8 +189,7 @@ void test_split_to_builders_no_delimiter() {
 }
 
 void test_split_to_builders_empty_string() {
-  StringBuilder sb;
-  sb_init(&sb);
+  StringBuilder sb = sb_new("");
 
   size_t count = 0;
   StringBuilder *substrings = sb_split_to_builders(&sb, ",", &count);
@@ -205,7 +202,7 @@ void test_split_to_builders_empty_string() {
 }
 
 int main() {
-  test_init();
+  test_new();
   test_free();
   test_append();
   test_replace();
