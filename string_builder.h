@@ -60,6 +60,20 @@ void sb_free(StringBuilder *sb);
 // Create a new StringBuilder
 StringBuilder sb_new(const char *value) {
   StringBuilder sb;
+
+  if (value == NULL) {
+    sb.length = 0;
+    sb.capacity = SB_DEFAULT_CAPACITY;
+    sb.data = malloc(sb.capacity * sizeof(char));
+    if (!sb.data) {
+      sb.length = 0;
+      sb.capacity = 0;
+      return sb;
+    }
+    sb.data[0] = '\0';
+    return sb;
+  }
+
   sb.length = strlen(value);
   sb.capacity = (sb.length + 1 > SB_DEFAULT_CAPACITY) ? sb.length + 1
                                                       : SB_DEFAULT_CAPACITY;
